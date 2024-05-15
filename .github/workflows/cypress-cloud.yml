@@ -26,7 +26,7 @@ jobs:
           group: UI Eletron
           spec: ${{ github.event.inputs.spec }}
         env:
-          CYPRESS_RECORD_KEY: 38602a50-9955-46bf-a88e-f1bf9b434387
+          CYPRESS_RECORD_KEY: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}
           
   cypress-firefox-tests-cloud:
@@ -48,5 +48,5 @@ jobs:
           group: UI firefox
           spec: ${{ github.event.inputs.spec }}
         env:
-          CYPRESS_RECORD_KEY: 38602a50-9955-46bf-a88e-f1bf9b434387
+          CYPRESS_RECORD_KEY: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}
