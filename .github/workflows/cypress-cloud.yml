@@ -8,8 +8,11 @@ on:
           default: cypress/e2e/*
 
 jobs: 
-  cypress-electon-tests:
+  cypress-electon-tests-cloud:
     runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node18.12.0-chrome103-ff107
+      options: --user 1001
     steps: 
       - name: Get code
         uses: actions/checkout@v4.1.5
@@ -21,6 +24,28 @@ jobs:
           browser: electron 
           record: true
           group: UI Eletron
+          spec: ${{ github.event.inputs.spec }}
+        env:
+          CYPRESS_RECORD_KEY: 38602a50-9955-46bf-a88e-f1bf9b434387
+          GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}
+          
+  cypress-firefox-tests-cloud:
+    needs: cypress-electon-tests-cloud
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node18.12.0-chrome103-ff107
+      options: --user 1001
+    steps: 
+      - name: Get code
+        uses: actions/checkout@v4.1.5
+
+      - name: cypress run
+        uses: cypress-io/github-action@v6.5.0
+        with:
+          install-command: yarn install
+          browser: firefox 
+          record: true
+          group: UI firefox
           spec: ${{ github.event.inputs.spec }}
         env:
           CYPRESS_RECORD_KEY: 38602a50-9955-46bf-a88e-f1bf9b434387
