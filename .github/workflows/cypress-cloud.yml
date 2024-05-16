@@ -8,7 +8,7 @@ on:
           default: cypress/e2e/*
 
 jobs: 
-  cypress-electon-tests-cloud:
+  cypress-electron-tests-cloud:
     runs-on: ubuntu-latest
     container:
       image: cypress/browsers:node18.12.0-chrome103-ff107
@@ -16,6 +16,10 @@ jobs:
     steps: 
       - name: Get code
         uses: actions/checkout@v4.1.5
+
+      - name: Generate timestamp
+        id: ts
+        run: echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
 
       - name: cypress run
         uses: cypress-io/github-action@v6.5.0
@@ -23,14 +27,15 @@ jobs:
           install-command: yarn install
           browser: electron 
           record: true
-          group: UI eletron
+          group: UI-Electron-${{ env.TIMESTAMP }}
+          ci-build-id: CypressCloud-${{ github.run_id }}-${{ env.TIMESTAMP }}-electron
           spec: ${{ github.event.inputs.spec }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}
-          
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   cypress-firefox-tests-cloud:
-    needs: cypress-electon-tests-cloud
+    needs: cypress-electron-tests-cloud
     runs-on: ubuntu-latest
     container:
       image: cypress/browsers:node18.12.0-chrome103-ff107
@@ -39,14 +44,19 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4.1.5
 
+      - name: Generate timestamp
+        id: ts
+        run: echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+
       - name: cypress run
         uses: cypress-io/github-action@v6.5.0
         with:
           install-command: yarn install
           browser: firefox 
           record: true
-          group: UI firefox
+          group: UI-Firefox-${{ env.TIMESTAMP }}
+          ci-build-id: CypressCloud-${{ github.run_id }}-${{ env.TIMESTAMP }}-firefox
           spec: ${{ github.event.inputs.spec }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
